@@ -42,4 +42,41 @@ async function fetchMeteo() {
   }
 }
 
-fetchMeteo();
+async function displayHours() {
+  const container = document.getElementById("prevision-journaliere");
+  console.log(container);
+  container.innerHTML = "";
+  for (let i = 10; i < 22; i++) {
+    const heure = document.createElement("div");
+    heure.classList.add("heure");
+    heure.innerHTML = `
+      <span>${i}:00</span>
+      <span>${Math.floor(Math.random() * (25 - 15 + 1)) + 15}°C</span>
+    `;
+    container.appendChild(heure);
+  }
+}
+
+async function displayDays() {
+  const container = document.getElementById("prevision-semaine");
+  console.log(container);
+  container.innerHTML = "";
+  const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+  for (let i = 0; i < 7; i++) {
+    const jour = document.createElement("div");
+    jour.classList.add("jour");
+    const temperature = Math.floor(Math.random() * (25 - 15 + 1)) + 15;
+    const temperatureResentie = temperature + Math.floor(Math.random() * (5 - 1 + 1)) + 1;
+    jour.innerHTML = `
+      <span>${jours[i]}</span>
+      <span>${temperature}°C</span>
+      <span>${temperatureResentie}°C ressenti</span>
+      <span>Aucune pluie</span>
+    `;
+    container.appendChild(jour);
+  }
+}
+
+//fetchMeteo();
+displayDays();
+displayHours();

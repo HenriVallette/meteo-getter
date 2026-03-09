@@ -1,0 +1,103 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: darkslategrey;
+  background-color: lightgray;
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(12, 1fr);
+}
+
+.meteo-actuelle {
+  background-color: red;
+  grid-column: 1 / 6;
+  grid-row: 1 / 7;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  column-gap: 0.5rem;
+
+  .pluie {
+    grid-column: 2 / 3;
+    grid-row: 3 / 6;
+    background-color: magenta;
+  }
+
+  .temperature {
+    grid-column: 1 / 2;
+    grid-row: 1 / 4;
+    background-color: cyan;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    .temperature-reelle {
+      font-size: 5rem;
+      line-height: 5rem;
+      font-weight: bold;
+    }
+
+    .temperature-ressentie {
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+    }
+  }
+}
+
+.pluie-dans-l-heure {
+  background-color: blue;
+  grid-column: 6 / 13;
+  grid-row: 1 / 7;
+}
+
+#prevision-journaliere {
+  background-color: green;
+  grid-column: 1 / 13;
+  grid-row: 7 / 10;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+
+  .heure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+#prevision-semaine {
+  background-color: yellow;
+  grid-column: 1 / 13;
+  grid-row: 10 / 13;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+
+  .jour {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.material-icons {
+  color: white;
+  --size: 2.55rem;
+  font-size: var(--size) !important;
+  height: var(--size);
+  width: var(--size);
+}

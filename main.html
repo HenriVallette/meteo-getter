@@ -12,12 +12,34 @@
     rel="stylesheet"
     href="main.css"
   >
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  >
+  <script
+    defer
+    src="main.js"
+  ></script>
 </head>
 
 <body>
-  <h1>Meteo Getter</h1>
-  <pre id="result">Chargement...</pre>
-  <script src="main.js"></script>
+  <div class="container">
+    <div class="meteo-actuelle">
+      <div class="temperature">
+        <span class="temperature-reelle">20°C</span>
+        <span class="temperature-ressentie">21°C ressenti</span>
+      </div>
+      <div class="pluie">
+        <span class="material-icons">water_drop</span>
+        <span>Aucune pluie dans l'heure</span>
+      </div>
+    </div>
+    <div class="pluie-dans-l-heure">
+      <span class="material-icons">water_drop</span>
+    </div>
+    <div id="prevision-journaliere"></div>
+    <div id="prevision-semaine"></div>
+  </div>
 </body>
 
 </html>

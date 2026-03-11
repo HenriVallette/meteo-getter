@@ -14,7 +14,7 @@
   >
   <link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
   >
   <script
     defer
@@ -24,18 +24,18 @@
 
 <body>
   <div class="container">
-    <div class="meteo-actuelle">
-      <div class="temperature">
+    <div id="meteo-actuelle">
+      <div class="temperature-actuelle">
         <span class="temperature-reelle">20°C</span>
         <span class="temperature-ressentie">21°C ressenti</span>
       </div>
-      <div class="pluie">
-        <span class="material-icons">water_drop</span>
-        <span>Aucune pluie dans l'heure</span>
+      <div class="temperature-journee">
+        <span class="temperature-min">15°C</span>
+        <span class="material-symbols-outlined">thermostat_arrow_down</span>
+        <span class="temperature-max">25°C</span>
+        <span class="material-symbols-outlined">thermostat_arrow_up</span>
       </div>
-    </div>
-    <div class="pluie-dans-l-heure">
-      <span class="material-icons">water_drop</span>
+      <div id="pluie-dans-l-heure"></div>
     </div>
     <div id="prevision-journaliere"></div>
     <div id="prevision-semaine"></div>

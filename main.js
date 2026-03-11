@@ -44,7 +44,6 @@ async function fetchMeteo() {
 
 async function displayHours() {
   const container = document.getElementById("prevision-journaliere");
-  console.log(container);
   container.innerHTML = "";
   for (let i = 10; i < 22; i++) {
     const heure = document.createElement("div");
@@ -59,7 +58,6 @@ async function displayHours() {
 
 async function displayDays() {
   const container = document.getElementById("prevision-semaine");
-  console.log(container);
   container.innerHTML = "";
   const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
   for (let i = 0; i < 7; i++) {
@@ -77,6 +75,22 @@ async function displayDays() {
   }
 }
 
+async function displayRainInTHeHour() {
+  const container = document.getElementById("pluie-dans-l-heure");
+  container.innerHTML = "";
+  const timings = ['5min', '10min', '', '20min', '', '30min', '', '50min', ''];
+  for (let i = 0; i < 9; i++) {
+    const item = document.createElement("div");
+    item.classList.add("pluie-dans-l-heure-item");
+    item.innerHTML = `
+      <span class="material-symbols-outlined">humidity_high</span>
+      <span>${timings[i]}</span>
+    `;
+    container.appendChild(item);
+  }
+}
+
 //fetchMeteo();
 displayDays();
 displayHours();
+displayRainInTHeHour();

@@ -21,6 +21,28 @@ body {
   grid-template-rows: repeat(12, 1fr);
 }
 
+@keyframes rotate-indefinitely {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#loading-message {
+  position: absolute;
+  --size: 2rem;
+  top: 0.5rem;
+  right: 0.75rem;
+  animation: rotate-indefinitely 1s linear infinite;
+
+  &.hidden {
+    display: none;
+  }
+}
+
 #meteo-actuelle {
   grid-column: 1 / 6;
   grid-row: 1 / 7;
@@ -138,7 +160,7 @@ body {
 
 .material-symbols-outlined {
   color: white;
-  --size: 2.55rem;
+  --size: 2.5rem;
   font-size: var(--size) !important;
   height: var(--size);
   width: var(--size);

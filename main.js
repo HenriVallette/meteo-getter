@@ -24,6 +24,14 @@ function buildQueryString(params) {
   return searchParams.toString();
 }
 
+function showLoadingMessage() {
+  document.getElementById("loading-message").classList.remove("hidden");
+}
+
+function hideLoadingMessage() {
+  document.getElementById("loading-message").classList.add("hidden");
+}
+
 async function fetchMeteo() {
   const queryString = buildQueryString(params);
   const fullUrl = `${url}?${queryString}`;
@@ -75,7 +83,7 @@ async function displayDays() {
   }
 }
 
-async function displayRainInTHeHour() {
+async function displayRainInTheHour() {
   const container = document.getElementById("pluie-dans-l-heure");
   container.innerHTML = "";
   const timings = ['5min', '10min', '', '20min', '', '30min', '', '50min', ''];
@@ -91,6 +99,15 @@ async function displayRainInTHeHour() {
 }
 
 //fetchMeteo();
+// setInterval(() => {
+//   showLoadingMessage();
+//   setTimeout(() => {
+//     displayDays();
+//     displayHours();
+//     displayRainInTheHour();
+//     hideLoadingMessage();
+//   }, 1000);
+// }, 5000);
 displayDays();
 displayHours();
-displayRainInTHeHour();
+displayRainInTheHour();

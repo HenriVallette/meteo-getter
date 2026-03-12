@@ -73,7 +73,7 @@ En cas d’erreur réseau/API :
 
 Pour garantir une exécution fluide sur un Pi Zero :
 
-- fréquence d’appel bornée à 2min,
+- fréquence d’appel bornée à 1 fois toutes les minutes,
 - parsing ciblé uniquement sur les données nécessaires,
 - cache local en mémoire (et persistance optionnelle légère),
 - pas de couche applicative lourde ni surcouche d’abstraction inutile.

@@ -8,7 +8,7 @@
 - les **températures prévues sur la journée**,
 - les **températures prévues sur la semaine**.
 
-Le projet est conçu **sans framework** afin de réduire au maximum la consommation de ressources et de stockage, avec un objectif clair : tourner efficacement sur un **Raspberry Pi Zero (16 Go)**.
+Le projet est conçu **sans framework** afin de réduire au maximum la consommation de ressources et de stockage, avec un objectif clair : tourner efficacement sur un **Raspberry Pi Zero (8 Go)**.
 
 ---
 
@@ -74,7 +74,7 @@ En cas d’erreur réseau/API :
 
 Pour garantir une exécution fluide sur un Pi Zero :
 
-- fréquence d’appel bornée (1 à 5 min),
+- fréquence d’appel bornée à 2min,
 - parsing ciblé uniquement sur les données nécessaires,
 - cache local en mémoire (et persistance optionnelle légère),
 - pas de couche applicative lourde ni surcouche d’abstraction inutile.
@@ -94,4 +94,4 @@ Résultat : un service météo fiable, compact et peu coûteux en ressources.
 
 ## Résumé
 
-Meteo Getter est un projet orienté **efficacité** : récupérer l’essentiel de la météo Météo-France, l’exploiter rapidement, et l’afficher de manière utile, tout en restant **léger, maintenable et compatible avec un Raspberry Pi Zero 16 Go**.
+Meteo Getter est un projet orienté **efficacité** : récupérer l’essentiel de la météo Météo-France, l’exploiter rapidement, et l’afficher de manière utile, tout en restant **léger, maintenable et compatible avec un Raspberry Pi Zero 8 Go**.

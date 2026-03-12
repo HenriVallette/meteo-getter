@@ -78,11 +78,6 @@ body {
         bottom: -1.5rem;
         right: -1.75rem;
       }
-
-      .material-symbols-outlined {
-        --size: 2rem;
-        color: lightskyblue;
-      }
     }
   }
 

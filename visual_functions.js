@@ -48,10 +48,7 @@ async function displayRainInTheHour() {
   for (let i = 0; i < 9; i++) {
     const item = document.createElement("div");
     item.classList.add("pluie-dans-l-heure-item");
-    item.innerHTML = `
-      <span class="material-symbols-outlined">humidity_high</span>
-      <span>${timings[i]}</span>
-    `;
+    item.innerHTML = getNoRainItemComponent(timings[i]);
     container.appendChild(item);
   }
 }

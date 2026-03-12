@@ -19,9 +19,8 @@ Le projet est conçu **sans framework** afin de réduire au maximum la consommat
   - intensité/probabilité de pluie à court terme,
   - températures horaires (ou demi-journées) pour la journée,
   - tendances de température sur 7 jours.
-- Rafraîchissement des données avec une fréquence configurable :
-  - **minimum recommandé : toutes les 5 minutes**,
-  - **maximum autorisé : toutes les 1 minute** (cas d’usage plus dynamique).
+  - utilisation du modèle AROME pour la pluie dans l'heure et les infos proches dans le temps
+  - utilisation du modèle ARPEGE pour la météo des prochains jours
 
 ---
 

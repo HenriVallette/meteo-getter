@@ -24,14 +24,6 @@ function buildQueryString(params) {
   return searchParams.toString();
 }
 
-function showLoadingMessage() {
-  document.getElementById("loading-message").classList.remove("hidden");
-}
-
-function hideLoadingMessage() {
-  document.getElementById("loading-message").classList.add("hidden");
-}
-
 async function fetchMeteo() {
   const queryString = buildQueryString(params);
   const fullUrl = `${url}?${queryString}`;
@@ -47,54 +39,6 @@ async function fetchMeteo() {
   } catch (error) {
     console.error("Erreur API :", error);
     document.getElementById("result").textContent = `Erreur : ${error.message}`;
-  }
-}
-
-async function displayHours() {
-  const container = document.getElementById("prevision-journaliere");
-  container.innerHTML = "";
-  for (let i = 10; i < 22; i++) {
-    const heure = document.createElement("div");
-    heure.classList.add("heure");
-    heure.innerHTML = `
-      <span>${i}:00</span>
-      <span>${Math.floor(Math.random() * (25 - 15 + 1)) + 15}°C</span>
-    `;
-    container.appendChild(heure);
-  }
-}
-
-async function displayDays() {
-  const container = document.getElementById("prevision-semaine");
-  container.innerHTML = "";
-  const jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-  for (let i = 0; i < 7; i++) {
-    const jour = document.createElement("div");
-    jour.classList.add("jour");
-    const temperature = Math.floor(Math.random() * (25 - 15 + 1)) + 15;
-    const temperatureResentie = temperature + Math.floor(Math.random() * (5 - 1 + 1)) + 1;
-    jour.innerHTML = `
-      <span>${jours[i]}</span>
-      <span>${temperature}°C</span>
-      <span>${temperatureResentie}°C ressenti</span>
-      <span>Aucune pluie</span>
-    `;
-    container.appendChild(jour);
-  }
-}
-
-async function displayRainInTheHour() {
-  const container = document.getElementById("pluie-dans-l-heure");
-  container.innerHTML = "";
-  const timings = ['5min', '10min', '', '20min', '', '30min', '', '50min', ''];
-  for (let i = 0; i < 9; i++) {
-    const item = document.createElement("div");
-    item.classList.add("pluie-dans-l-heure-item");
-    item.innerHTML = `
-      <span class="material-symbols-outlined">humidity_high</span>
-      <span>${timings[i]}</span>
-    `;
-    container.appendChild(item);
   }
 }
 

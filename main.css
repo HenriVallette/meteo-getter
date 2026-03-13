@@ -81,22 +81,16 @@ body {
     }
   }
 
-  .temperature-journee {
+  #precipitations-actuelles {
     grid-column: 2 / 3;
-    grid-row: 2 / 4;
-    background-color: darksalmon;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    column-gap: 0.5rem;
+    grid-row: 1 / 4;
+    display: flex;
     align-items: center;
     justify-content: center;
+    background-color: plum;
 
-    .temperature-min,
-    .temperature-max {
-      font-size: 1.5rem;
-      line-height: 1.5rem;
-      text-align: right;
+    .material-symbols-outlined {
+      --size: 10rem;
     }
   }
 
@@ -119,6 +113,81 @@ body {
     .temperature-ressentie {
       font-size: 1.5rem;
       line-height: 1.5rem;
+    }
+  }
+}
+
+.infos-journaliers {
+  grid-column: 6 / 13;
+  grid-row: 1 / 7;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+
+  #vitesse-vent {
+    grid-column: 1 / 2;
+    grid-row: 2 / 4;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    background-color: lightcoral;
+
+    .vitesse-vent {
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+      text-align: right;
+    }
+  }
+
+  #temperature-minimale-maximale {
+    grid-column: 2 / 3;
+    grid-row: 2 / 4;
+    background-color: darksalmon;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    column-gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+
+    .temperature-min,
+    .temperature-max {
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+      text-align: right;
+    }
+  }
+
+  #indice-uv-journalier {
+    grid-column: 3 / 4;
+    grid-row: 2 / 4;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    background-color: lightsteelblue;
+
+    .indice-uv {
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+      text-align: right;
+    }
+  }
+
+  #humidite-journaliere {
+    grid-column: 4 / 5;
+    grid-row: 2 / 4;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    background-color: mediumpurple;
+
+    .humidite {
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+      text-align: right;
     }
   }
 }

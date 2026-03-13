@@ -30,6 +30,14 @@ getCurrentPosition()
     console.error("Erreur lors de la récupération des coordonnées GPS :", err);
   });
 
+// Pour espace vide
+// durée ensoleilement
+// date / heure / fête / jour férié
+// blague du jour
+// connexion google agenda
+// temps trajet taff
+
+
 
 //fetchMeteo();
 // setInterval(() => {

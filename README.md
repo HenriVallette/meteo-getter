@@ -2,7 +2,7 @@
 
 ## Objectif
 
-**Meteo Getter** est un service ultra-léger qui interroge l’API de Météo-France pour récupérer et afficher :
+**Meteo Getter** est une application web ultra-légère qui interroge Open-Meteo pour récupérer et afficher :
 
 - la **pluie dans l’heure**,
 - les **températures prévues sur la journée**,
@@ -14,7 +14,8 @@ Le projet est conçu **sans framework** afin de réduire au maximum la consommat
 
 ## Fonctionnalités principales
 
-- Récupération périodique des données météo via l’API Météo-France.
+- Récupération périodique des données météo via Open-Meteo.
+- Ville fixe configurée dans `LOCATION`, dans `logic.js`.
 - Extraction des informations utiles pour l’affichage :
   - intensité/probabilité de pluie à court terme,
   - températures horaires (ou demi-journées) pour la journée,
@@ -39,7 +40,7 @@ Le projet suit une approche **minimaliste et embarquée** :
 ## Cycle de récupération des données
 
 1. Déclenchement d’un cycle (timer).
-2. Appel à l’API Météo-France.
+2. Appel à l’API météo Open-Meteo.
 3. Validation et normalisation des champs utiles.
 4. Mise en cache locale des dernières données valides.
 5. Mise à disposition des données pour l’affichage.
@@ -73,9 +74,9 @@ En cas d’erreur réseau/API :
 
 Pour garantir une exécution fluide sur un Pi Zero :
 
-- fréquence d’appel bornée à 1 fois toutes les minutes,
+- rafraîchissement des données toutes les 15 minutes,
 - parsing ciblé uniquement sur les données nécessaires,
-- cache local en mémoire (et persistance optionnelle légère),
+- cache persistant léger dans le stockage du navigateur,
 - pas de couche applicative lourde ni surcouche d’abstraction inutile.
 
 Résultat : un service météo fiable, compact et peu coûteux en ressources.
@@ -93,4 +94,20 @@ Résultat : un service météo fiable, compact et peu coûteux en ressources.
 
 ## Résumé
 
-Meteo Getter est un projet orienté **efficacité** : récupérer l’essentiel de la météo Météo-France, l’exploiter rapidement, et l’afficher de manière utile, tout en restant **léger, maintenable et compatible avec un Raspberry Pi Zero 8 Go**.
+Meteo Getter est un projet orienté **efficacité** : récupérer l’essentiel de la météo, l’exploiter rapidement, et l’afficher de manière utile, tout en restant **léger, maintenable et compatible avec un Raspberry Pi Zero 8 Go**.
+
+## Lancement local
+
+Depuis le dossier du projet :
+
+```bash
+python -m http.server 8000
+```
+
+Ouvrir ensuite `http://localhost:8000/main.html`.
+
+Les tests ne nécessitent aucune dépendance externe :
+
+```bash
+npm test
+```

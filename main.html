@@ -16,54 +16,143 @@
     rel="stylesheet"
     href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
   >
-  <script src="logic.js"></script>
-  <script src="visual_functions.js"></script>
-  <script src="weather_components.js"></script>
   <script
+    type="module"
     defer
     src="main.js"
   ></script>
 </head>
 
 <body>
-  <span
-    id="loading-message"
-    class="material-symbols-outlined"
-  >autorenew</span>
-  <div class="container">
-    <div id="meteo-actuelle">
-      <div class="temperature-actuelle">
-        <span class="temperature-reelle">20°C</span>
-        <span class="temperature-ressentie">21°C ressenti</span>
-      </div>
-      <div id="precipitations-actuelles">
-        <span class="material-symbols-outlined">cloud</span>
-      </div>
-      <div id="pluie-dans-l-heure"></div>
-    </div>
-    <div class="infos-journaliers">
-      <div id="vitesse-vent">
-        <span class="vitesse-vent">27 km/h</span>
-        <span class="material-symbols-outlined">air</span>
-      </div>
-      <div id="temperature-minimale-maximale">
-        <span class="temperature-min">15°C</span>
-        <span class="material-symbols-outlined">thermostat_arrow_down</span>
-        <span class="temperature-max">25°C</span>
-        <span class="material-symbols-outlined">thermostat_arrow_up</span>
-      </div>
-      <div id="indice-uv-journalier">
-        <span class="indice-uv">3/11</span>
-        <span class="material-symbols-outlined">flare</span>
-      </div>
-      <div id="humidite-journaliere">
-        <span class="humidite">50%</span>
-        <span class="material-symbols-outlined">humidity_percentage</span>
+  <header class="application-header">
+    <div class="location-summary">
+      <span
+        class="material-symbols-outlined"
+        aria-hidden="true"
+      >location_on</span>
+      <div>
+        <h1 id="location-name">Localisation</h1>
+        <p id="location-details"></p>
       </div>
     </div>
-    <div id="prevision-journaliere"></div>
-    <div id="prevision-semaine"></div>
+    <!-- <button
+      id="refresh-button"
+      class="refresh-button"
+      type="button"
+    >
+      <span
+        class="material-symbols-outlined"
+        aria-hidden="true"
+      >refresh</span>
+      Actualiser
+    </button> -->
+  </header>
+
+  <div
+    class="status-row"
+    aria-live="polite"
+  >
+    <span
+      id="loading-message"
+      class="material-symbols-outlined loading-icon"
+      hidden
+      aria-label="Chargement"
+    >autorenew</span>
+    <p id="application-status">Initialisation…</p>
+    <p class="last-update-label">Mise à jour : <span id="last-update">—</span></p>
   </div>
+
+  <main class="dashboard">
+    <section
+      class="current-panel"
+      aria-labelledby="current-title"
+    >
+      <div class="section-heading">
+        <h2 id="current-title">Maintenant</h2>
+        <span id="current-weather-label">—</span>
+      </div>
+      <div class="current-weather">
+        <div class="temperature-current">
+          <strong id="current-temperature">—</strong>
+          <span id="apparent-temperature">— ressenti</span>
+        </div>
+        <div
+          id="current-weather-icon"
+          class="current-weather-icon"
+        ></div>
+      </div>
+      <h3>Pluie dans l'heure</h3>
+      <div
+        id="rain-forecast"
+        class="rain-forecast"
+      >
+        <p class="empty-message">Chargement des prévisions…</p>
+      </div>
+    </section>
+
+    <section
+      class="metrics-panel"
+      aria-labelledby="metrics-title"
+    >
+      <h2 id="metrics-title">Aujourd'hui</h2>
+      <div class="metrics-grid">
+        <article class="metric">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >air</span>
+          <span>Vent</span>
+          <strong id="wind-speed">—</strong>
+        </article>
+        <article class="metric">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >thermostat</span>
+          <span>Min. / Max.</span>
+          <strong><span id="temperature-min">—</span> / <span id="temperature-max">—</span></strong>
+        </article>
+        <article class="metric">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >flare</span>
+          <span>Indice UV</span>
+          <strong id="uv-index">—</strong>
+        </article>
+        <article class="metric">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >humidity_percentage</span>
+          <span>Humidité</span>
+          <strong id="humidity">—</strong>
+        </article>
+      </div>
+    </section>
+
+    <section
+      class="forecast-panel hourly-panel"
+      aria-labelledby="hourly-title"
+    >
+      <h2 id="hourly-title">Prochaines heures</h2>
+      <div
+        id="hourly-forecast"
+        class="hourly-forecast"
+      ></div>
+    </section>
+
+    <section
+      class="forecast-panel daily-panel"
+      aria-labelledby="daily-title"
+    >
+      <h2 id="daily-title">7 prochains jours</h2>
+      <div
+        id="daily-forecast"
+        class="daily-forecast"
+      ></div>
+    </section>
+  </main>
 </body>
 
 </html>

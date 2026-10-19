@@ -18,6 +18,24 @@ export function renderWeather(weather) {
   document.getElementById("last-update").textContent = formatUpdateTime(weather.updatedAt);
 }
 
+export function renderPlaces(places) {
+  for (const place of places) {
+    document.getElementById(`${place.id}-period`).textContent = place.period ?? "—";
+    document.getElementById(`${place.id}-temperature-min`).textContent = formatTemperature(
+      place.minimum
+    );
+    document.getElementById(`${place.id}-temperature-max`).textContent = formatTemperature(
+      place.maximum
+    );
+    document.getElementById(`${place.id}-rain-probability`).textContent =
+      place.rainProbability == null ? "—" : `${Math.round(place.rainProbability)}%`;
+
+    const error = document.getElementById(`${place.id}-error`);
+    error.hidden = !place.error;
+    error.textContent = place.error ?? "";
+  }
+}
+
 export function renderLocation(location) {
   const details = [location.admin1, location.country].filter(Boolean).join(", ");
 
@@ -63,8 +81,8 @@ function renderCurrentWeather(weather) {
     today.temperature_2m_max
   );
   document.getElementById("uv-index").textContent = formatNumber(today.uv_index_max);
-  document.getElementById("humidity").textContent =
-    `${Math.round(current.relative_humidity_2m ?? 0)} %`;
+  document.getElementById("rain-probability").textContent =
+    `${Math.round(today.precipitation_probability_max ?? 0)}%`;
   iconContainer.replaceChildren(createWeatherIcon(current.weather_code, "current-icon"));
 }
 
@@ -114,7 +132,7 @@ function renderDaily(weather) {
 }
 
 function formatTemperature(value) {
-  return value == null ? "—" : `${temperatureFormatter.format(value)} °C`;
+  return value == null ? "—" : `${temperatureFormatter.format(value)}°C`;
 }
 
 function formatNumber(value, maximumFractionDigits = 1) {

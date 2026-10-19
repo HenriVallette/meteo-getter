@@ -71,7 +71,7 @@ export function createHourCard(item, timezone, formatTime, formatTemperature) {
   element.className = "hour-card";
   time.textContent = formatTime(item.time, timezone);
   temperature.textContent = formatTemperature(item.temperature_2m);
-  rain.textContent = `${Math.round(item.precipitation_probability ?? 0)} % pluie`;
+  rain.textContent = `${Math.round(item.precipitation_probability ?? 0)}% pluie`;
   element.append(time, createWeatherIcon(item.weather_code), temperature, rain);
   return element;
 }
@@ -85,7 +85,7 @@ export function createDayCard(item, timezone, formatDay, formatTemperature) {
   element.className = "day-card";
   day.textContent = formatDay(item.time, timezone);
   temperatures.textContent = `${formatTemperature(item.temperature_2m_min)} / ${formatTemperature(item.temperature_2m_max)}`;
-  rain.textContent = `${Math.round(item.precipitation_probability_max ?? 0)} % pluie`;
+  rain.textContent = `${Math.round(item.precipitation_probability_max ?? 0)}% pluie`;
   element.append(day, createWeatherIcon(item.weather_code), temperatures, rain);
   return element;
 }

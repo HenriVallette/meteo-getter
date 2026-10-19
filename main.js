@@ -1,11 +1,14 @@
 import {
   LOCATION,
+  PLACES,
   fetchWeather,
   loadWeatherCache,
-  saveWeatherCache
+  saveWeatherCache,
+  selectDailyForecast
 } from "./logic.js";
 import {
   renderLocation,
+  renderPlaces,
   renderStatus,
   renderWeather,
   setLoading
@@ -43,6 +46,7 @@ async function initialize() {
 async function refreshWeather() {
   setLoading(true);
   renderStatus(`Actualisation de la météo pour ${LOCATION.name}…`);
+  const placesPromise = refreshPlaces();
 
   try {
     const weather = await fetchWeather(LOCATION);
@@ -66,8 +70,37 @@ async function refreshWeather() {
       renderStatus(`Impossible de charger la météo : ${error.message}`, "error");
     }
   } finally {
+    await placesPromise;
     setLoading(false);
   }
+}
+
+async function refreshPlaces() {
+  const places = await Promise.all(PLACES.map(async place => {
+    try {
+      const weather = await fetchWeather(place);
+      const forecast = selectDailyForecast(weather.daily, weather.timezone);
+
+      return {
+        id: place.id,
+        period: !forecast
+          ? "—"
+          : forecast === weather.daily[0] ? "Aujourd'hui" : "Demain",
+        minimum: forecast?.temperature_2m_min,
+        maximum: forecast?.temperature_2m_max,
+        rainProbability: forecast?.precipitation_probability_max,
+        error: forecast ? "" : "Prévision du lendemain indisponible."
+      };
+    } catch (error) {
+      return {
+        id: place.id,
+        period: "—",
+        error: error.message
+      };
+    }
+  }));
+
+  renderPlaces(places);
 }
 
 async function handleVisibilityChange() {

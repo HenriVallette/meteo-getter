@@ -1,6 +1,7 @@
 const WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast";
 const WEATHER_CACHE_KEY = "meteo-getter.weather";
 const REQUEST_TIMEOUT_MS = 10000;
+const NEXT_DAY_HOUR = 21;
 
 // Ville affichée par l'application.
 // Modifier cette variable pour changer de ville.
@@ -12,6 +13,23 @@ export const LOCATION = Object.freeze({
   country: "France",
   timezone: "Europe/Paris"
 });
+
+export const PLACES = Object.freeze([
+  Object.freeze({
+    id: "defense",
+    name: "La Défense",
+    latitude: 48.89201,
+    longitude: 2.23803,
+    timezone: "Europe/Paris"
+  }),
+  Object.freeze({
+    id: "balard",
+    name: "Balard",
+    latitude: 48.83545,
+    longitude: 2.27815,
+    timezone: "Europe/Paris"
+  })
+]);
 
 export function buildQueryString(parameters) {
   const searchParameters = new URLSearchParams();
@@ -66,6 +84,11 @@ export async function fetchWeather(location) {
   };
   const response = await fetchJson(`${WEATHER_API_URL}?${buildQueryString(parameters)}`);
   return normalizeWeatherResponse(response, location);
+}
+
+export function selectDailyForecast(daily, timezone, now = new Date()) {
+  const index = getHour(now, timezone) >= NEXT_DAY_HOUR ? 1 : 0;
+  return daily[index] ?? null;
 }
 
 export function normalizeWeatherResponse(response, location) {
@@ -129,6 +152,16 @@ async function fetchJson(url) {
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+function getHour(date, timezone) {
+  const hour = new Intl.DateTimeFormat("en-GB", {
+    hour: "numeric",
+    hourCycle: "h23",
+    timeZone: timezone
+  }).formatToParts(date).find(part => part.type === "hour");
+
+  return Number(hour?.value ?? 0);
 }
 
 function mapSeries(series) {

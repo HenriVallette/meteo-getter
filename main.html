@@ -24,7 +24,7 @@
 </head>
 
 <body>
-  <header class="application-header">
+  <!-- <header class="application-header">
     <div class="location-summary">
       <span
         class="material-symbols-outlined"
@@ -35,7 +35,7 @@
         <p id="location-details"></p>
       </div>
     </div>
-    <!-- <button
+    <button
       id="refresh-button"
       class="refresh-button"
       type="button"
@@ -45,20 +45,13 @@
         aria-hidden="true"
       >refresh</span>
       Actualiser
-    </button> -->
-  </header>
+    </button>
+  </header> -->
 
   <div
     class="status-row"
     aria-live="polite"
   >
-    <span
-      id="loading-message"
-      class="material-symbols-outlined loading-icon"
-      hidden
-      aria-label="Chargement"
-    >autorenew</span>
-    <p id="application-status">Initialisation…</p>
     <p class="last-update-label">Mise à jour : <span id="last-update">—</span></p>
   </div>
 
@@ -68,7 +61,16 @@
       aria-labelledby="current-title"
     >
       <div class="section-heading">
-        <h2 id="current-title">Maintenant</h2>
+        <div class="location-summary">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >location_on</span>
+          <div>
+            <h1 id="location-name">Localisation</h1>
+            <p id="location-details"></p>
+          </div>
+        </div>
         <span id="current-weather-label">—</span>
       </div>
       <div class="current-weather">
@@ -235,6 +237,8 @@
         id="daily-forecast"
         class="daily-forecast"
       ></div>
+    </section>
+    <section class="plus-panel">
     </section>
   </main>
 </body>

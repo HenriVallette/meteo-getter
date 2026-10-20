@@ -43,23 +43,6 @@ export function renderLocation(location) {
   document.getElementById("location-details").textContent = details;
 }
 
-export function setLoading(isLoading) {
-  const loadingIcon = document.getElementById("loading-message");
-
-  loadingIcon.hidden = !isLoading;
-  const refreshButton = document.getElementById("refresh-button");
-  if (refreshButton) {
-    refreshButton.disabled = isLoading;
-  }
-}
-
-export function renderStatus(message, status = "info") {
-  const element = document.getElementById("application-status");
-
-  element.textContent = message;
-  element.dataset.status = status;
-}
-
 function renderCurrentWeather(weather) {
   const current = weather.current;
   const description = getWeatherDescription(current.weather_code);
@@ -95,7 +78,7 @@ function renderRain(weather) {
     const unavailable = document.createElement("p");
 
     unavailable.className = "empty-message";
-    unavailable.textContent = "Prévision à 15 minutes indisponible pour ce lieu.";
+    unavailable.textContent = "Prévision à 5 minutes indisponible pour ce lieu.";
     container.appendChild(unavailable);
     return;
   }
@@ -124,7 +107,7 @@ function renderDaily(weather) {
 
   container.replaceChildren();
 
-  for (const item of weather.daily) {
+  for (const item of weather.daily.slice(1, 8)) {
     container.appendChild(
       createDayCard(item, weather.timezone, formatDay, formatTemperature)
     );

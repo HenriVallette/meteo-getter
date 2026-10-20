@@ -9,9 +9,7 @@ import {
 import {
   renderLocation,
   renderPlaces,
-  renderStatus,
-  renderWeather,
-  setLoading
+  renderWeather
 } from "./visual_functions.js";
 
 const REFRESH_INTERVAL_MS = 60 * 1000; // Toutes les minutes
@@ -36,7 +34,6 @@ async function initialize() {
   if (isWeatherForLocation(cachedWeather, LOCATION)) {
     latestWeather = cachedWeather;
     renderWeather(cachedWeather);
-    renderStatus("Dernières données enregistrées, actualisation en cours.", "warning");
   }
 
   await refreshWeather();
@@ -44,8 +41,6 @@ async function initialize() {
 }
 
 async function refreshWeather() {
-  setLoading(true);
-  renderStatus(`Actualisation de la météo pour ${LOCATION.name}…`);
   const placesPromise = refreshPlaces();
 
   try {
@@ -55,23 +50,15 @@ async function refreshWeather() {
     saveWeatherCache(weather);
     renderWeather(weather);
     renderLocation(LOCATION);
-    renderStatus("Données météo à jour.", "success");
   } catch (error) {
     const cachedWeather = loadWeatherCache();
 
     if (isWeatherForLocation(cachedWeather, LOCATION)) {
       latestWeather = cachedWeather;
       renderWeather(cachedWeather);
-      renderStatus(
-        `Service indisponible. Données enregistrées affichées (${error.message})`,
-        "warning"
-      );
-    } else {
-      renderStatus(`Impossible de charger la météo : ${error.message}`, "error");
     }
   } finally {
     await placesPromise;
-    setLoading(false);
   }
 }
 

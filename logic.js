@@ -2,6 +2,9 @@ const WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast";
 const WEATHER_CACHE_KEY = "meteo-getter.weather";
 const REQUEST_TIMEOUT_MS = 10000;
 const NEXT_DAY_HOUR = 21;
+const FIVE_MINUTE_SECONDS = 5 * 60;
+const FIFTEEN_MINUTE_SECONDS = 15 * 60;
+const RAIN_HOUR_STEPS = 12;
 
 // Ville affichée par l'application.
 // Modifier cette variable pour changer de ville.
@@ -48,7 +51,7 @@ export async function fetchWeather(location) {
     models: "best_match",
     timezone: "auto",
     timeformat: "unixtime",
-    forecast_days: 7,
+    forecast_days: 8,
     forecast_minutely_15: 8,
     current: [
       "temperature_2m",
@@ -101,9 +104,7 @@ export function normalizeWeatherResponse(response, location) {
     .filter(item => item.time >= currentTimestamp)
     .slice(0, 12);
   const minutelyItems = response.minutely_15
-    ? mapSeries(response.minutely_15)
-      .filter(item => item.time >= currentTimestamp)
-      .slice(0, 5)
+    ? toFiveMinuteRain(response.minutely_15, currentTimestamp)
     : [];
 
   return {
@@ -114,7 +115,7 @@ export function normalizeWeatherResponse(response, location) {
     current: { ...response.current },
     hourly: hourlyItems,
     minutely: minutelyItems,
-    daily: mapSeries(response.daily).slice(0, 7)
+    daily: mapSeries(response.daily).slice(0, 8)
   };
 }
 
@@ -162,6 +163,28 @@ function getHour(date, timezone) {
   }).formatToParts(date).find(part => part.type === "hour");
 
   return Number(hour?.value ?? 0);
+}
+
+// Open-Meteo cumule la pluie sur 15 minutes. Chaque cumul est réparti
+// en trois pas de 5 minutes pour couvrir l'heure à venir.
+function toFiveMinuteRain(series, currentTimestamp) {
+  const intervals = mapSeries(series)
+    .filter(item => item.time > currentTimestamp)
+    .slice(0, RAIN_HOUR_STEPS / 3);
+
+  return intervals.flatMap(item => {
+    const windowStart = item.time - FIFTEEN_MINUTE_SECONDS;
+
+    return [0, 1, 2].map(step => ({
+      time: windowStart + step * FIVE_MINUTE_SECONDS,
+      precipitation: splitFifteenMinuteAmount(item.precipitation),
+      rain: splitFifteenMinuteAmount(item.rain)
+    }));
+  });
+}
+
+function splitFifteenMinuteAmount(value) {
+  return value == null ? null : value / 3;
 }
 
 function mapSeries(series) {

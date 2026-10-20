@@ -1,10 +1,16 @@
 const WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast";
+const BLAGUES_API_URL = "https://www.blagues-api.fr/api/random";
 const WEATHER_CACHE_KEY = "meteo-getter.weather";
+const JOKE_CACHE_KEY = "meteo-getter.joke";
 const REQUEST_TIMEOUT_MS = 10000;
+const JOKE_REFRESH_INTERVAL_MS = 3 * 60 * 60 * 1000;
 const NEXT_DAY_HOUR = 21;
 const FIVE_MINUTE_SECONDS = 5 * 60;
 const FIFTEEN_MINUTE_SECONDS = 15 * 60;
 const RAIN_HOUR_STEPS = 12;
+
+// Token Bearer à récupérer sur https://www.blagues-api.fr/ (profil).
+export const BLAGUES_API_TOKEN = "";
 
 // Ville affichée par l'application.
 // Modifier cette variable pour changer de ville.
@@ -127,14 +133,56 @@ export function loadWeatherCache(storage = globalThis.localStorage) {
   return readJsonCache(WEATHER_CACHE_KEY, storage);
 }
 
-async function fetchJson(url) {
+export function isJokeCacheFresh(joke, now = Date.now()) {
+  return Boolean(joke?.fetchedAt && now - joke.fetchedAt < JOKE_REFRESH_INTERVAL_MS);
+}
+
+export function saveJokeCache(joke, storage = globalThis.localStorage) {
+  writeJsonCache(JOKE_CACHE_KEY, joke, storage);
+}
+
+export function loadJokeCache(storage = globalThis.localStorage) {
+  return readJsonCache(JOKE_CACHE_KEY, storage);
+}
+
+export async function fetchJoke() {
+  if (!BLAGUES_API_TOKEN) {
+    throw new Error(
+      "Token Blagues API manquant. Renseignez BLAGUES_API_TOKEN dans logic.js."
+    );
+  }
+
+  const response = await fetchJson(
+    `${BLAGUES_API_URL}?disallow=dark&disallow=limit`,
+    {
+      Authorization: `Bearer ${BLAGUES_API_TOKEN}`
+    }
+  );
+
+  if (!response?.joke) {
+    throw new Error("La réponse blague est incomplète.");
+  }
+
+  return {
+    id: response.id,
+    type: response.type,
+    joke: response.joke,
+    answer: response.answer ?? "",
+    fetchedAt: Date.now()
+  };
+}
+
+export { JOKE_REFRESH_INTERVAL_MS };
+
+async function fetchJson(url, headers = {}) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
   try {
     const response = await fetch(url, {
       headers: {
-        Accept: "application/json"
+        Accept: "application/json",
+        ...headers
       },
       signal: controller.signal
     });
@@ -146,7 +194,7 @@ async function fetchJson(url) {
     return await response.json();
   } catch (error) {
     if (error.name === "AbortError") {
-      throw new Error("Le service météo n'a pas répondu à temps.", { cause: error });
+      throw new Error("Le service distant n'a pas répondu à temps.", { cause: error });
     }
 
     throw error;

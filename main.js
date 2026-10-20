@@ -1,12 +1,18 @@
 import {
+  JOKE_REFRESH_INTERVAL_MS,
   LOCATION,
   PLACES,
+  fetchJoke,
   fetchWeather,
+  isJokeCacheFresh,
+  loadJokeCache,
   loadWeatherCache,
+  saveJokeCache,
   saveWeatherCache,
   selectDailyForecast
 } from "./logic.js";
 import {
+  renderJoke,
   renderLocation,
   renderPlaces,
   renderWeather
@@ -15,6 +21,7 @@ import {
 const REFRESH_INTERVAL_MS = 60 * 1000; // Toutes les minutes
 
 let latestWeather = null;
+let latestJoke = null;
 
 const refreshButton = document.getElementById("refresh-button");
 
@@ -24,6 +31,7 @@ initialize();
 
 async function initialize() {
   const cachedWeather = loadWeatherCache();
+  const cachedJoke = loadJokeCache();
 
   if (refreshButton) {
     refreshButton.addEventListener("click", refreshWeather);
@@ -36,7 +44,12 @@ async function initialize() {
     renderWeather(cachedWeather);
   }
 
-  await refreshWeather();
+  if (cachedJoke) {
+    latestJoke = cachedJoke;
+    renderJoke(cachedJoke);
+  }
+
+  await Promise.all([refreshWeather(), refreshJoke()]);
   window.setInterval(refreshWeather, REFRESH_INTERVAL_MS);
 }
 
@@ -90,12 +103,68 @@ async function refreshPlaces() {
   renderPlaces(places);
 }
 
+async function refreshJoke(force = false) {
+  const cachedJoke = latestJoke ?? loadJokeCache();
+
+  if (!force && isJokeCacheFresh(cachedJoke)) {
+    latestJoke = cachedJoke;
+    renderJoke(cachedJoke);
+    scheduleNextJokeRefresh();
+    return;
+  }
+
+  try {
+    const joke = await fetchJoke();
+
+    latestJoke = joke;
+    saveJokeCache(joke);
+    renderJoke(joke);
+    scheduleNextJokeRefresh(JOKE_REFRESH_INTERVAL_MS);
+  } catch (error) {
+    if (cachedJoke) {
+      latestJoke = cachedJoke;
+      renderJoke(cachedJoke, error.message);
+    } else {
+      renderJoke(null, error.message);
+    }
+
+    scheduleNextJokeRefresh(JOKE_REFRESH_INTERVAL_MS);
+  }
+}
+
+function scheduleNextJokeRefresh(delay) {
+  if (scheduleNextJokeRefresh.timeoutId) {
+    window.clearTimeout(scheduleNextJokeRefresh.timeoutId);
+  }
+
+  const nextDelay = delay ?? (() => {
+    const joke = latestJoke ?? loadJokeCache();
+    const elapsed = joke?.fetchedAt ? Date.now() - joke.fetchedAt : JOKE_REFRESH_INTERVAL_MS;
+    return Math.max(0, JOKE_REFRESH_INTERVAL_MS - elapsed);
+  })();
+
+  scheduleNextJokeRefresh.timeoutId = window.setTimeout(() => {
+    refreshJoke(true);
+  }, nextDelay);
+}
+
 async function handleVisibilityChange() {
-  if (
-    document.visibilityState === "visible"
-    && (!latestWeather || Date.now() - latestWeather.updatedAt >= REFRESH_INTERVAL_MS)
-  ) {
-    await refreshWeather();
+  if (document.visibilityState !== "visible") {
+    return;
+  }
+
+  const tasks = [];
+
+  if (!latestWeather || Date.now() - latestWeather.updatedAt >= REFRESH_INTERVAL_MS) {
+    tasks.push(refreshWeather());
+  }
+
+  if (!isJokeCacheFresh(latestJoke ?? loadJokeCache())) {
+    tasks.push(refreshJoke());
+  }
+
+  if (tasks.length > 0) {
+    await Promise.all(tasks);
   }
 }
 

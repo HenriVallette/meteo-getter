@@ -407,7 +407,7 @@ button {
 }
 
 .dashboard h2 {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 
 .dashboard h3 {
@@ -418,7 +418,8 @@ button {
 .current-panel,
 .metrics-panel,
 .small-ville-panel,
-.forecast-panel {
+.forecast-panel,
+.plus-panel {
   padding: clamp(1rem, 2vw, 1.5rem);
 }
 
@@ -695,6 +696,37 @@ button {
 
 .plus-panel {
   grid-column: 3 / -1;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+.plus-panel .section-heading .material-symbols-outlined {
+  font-size: 2.75rem !important;
+}
+
+.joke-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: space-around;
+}
+
+#joke-setup,
+#joke-answer {
+  margin: 0;
+}
+
+#joke-setup {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffb15a;
+}
+
+#joke-answer {
+  font-size: 1.125rem;
+  line-height: 1.5;
+  text-align: end;
 }
 
 .hourly-forecast,
@@ -771,6 +803,11 @@ footer {
     grid-column: 1 / -1;
   }
 
+  .daily-panel,
+  .plus-panel {
+    grid-column: 1 / -1;
+  }
+
   .small-ville-grid {
     flex-direction: row;
   }
@@ -788,7 +825,8 @@ footer {
   }
 
   .hourly-panel,
-  .daily-panel {
+  .daily-panel,
+  .plus-panel {
     grid-column: 1;
   }
 

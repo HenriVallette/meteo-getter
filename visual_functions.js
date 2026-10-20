@@ -43,6 +43,21 @@ export function renderLocation(location) {
   document.getElementById("location-details").textContent = details;
 }
 
+export function renderJoke(joke, errorMessage = "") {
+  const setup = document.getElementById("joke-setup");
+  const answer = document.getElementById("joke-answer");
+  const error = document.getElementById("joke-error");
+
+  if (joke) {
+    setup.textContent = joke.joke;
+    answer.textContent = joke.answer ?? "";
+    answer.hidden = !joke.answer;
+  }
+
+  error.hidden = !errorMessage;
+  error.textContent = errorMessage;
+}
+
 function renderCurrentWeather(weather) {
   const current = weather.current;
   const description = getWeatherDescription(current.weather_code);

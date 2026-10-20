@@ -238,7 +238,26 @@
         class="daily-forecast"
       ></div>
     </section>
-    <section class="plus-panel">
+    <section
+      class="plus-panel"
+      aria-labelledby="joke-title"
+    >
+      <div class="section-heading">
+        <h2 id="joke-title">Blague du moment</h2>
+        <span
+          class="material-symbols-outlined"
+          aria-hidden="true"
+        >mood</span>
+      </div>
+      <div class="joke-content">
+        <p id="joke-setup">Chargement de la blague…</p>
+        <p id="joke-answer"></p>
+      </div>
+      <p
+        id="joke-error"
+        class="place-error"
+        hidden
+      ></p>
     </section>
   </main>
 </body>

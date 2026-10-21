@@ -29,11 +29,11 @@ const WEATHER_CODES = {
   99: { icon: "thunderstorm", label: "Fort orage avec grêle" }
 };
 
-export function getWeatherDescription(code) {
+function getWeatherDescription(code) {
   return WEATHER_CODES[code] ?? { icon: "cloud", label: "Temps indéterminé" };
 }
 
-export function createWeatherIcon(code, className = "") {
+function createWeatherIcon(code, className = "") {
   const description = getWeatherDescription(code);
   const icon = document.createElement("span");
 
@@ -44,7 +44,7 @@ export function createWeatherIcon(code, className = "") {
   return icon;
 }
 
-export function createRainItem(item, timezone, formatTime, formatNumber) {
+function createRainItem(item, timezone, formatTime, formatNumber) {
   const precipitation = item.precipitation ?? item.rain ?? 0;
   const element = document.createElement("div");
   const time = document.createElement("span");
@@ -62,7 +62,7 @@ export function createRainItem(item, timezone, formatTime, formatNumber) {
   return element;
 }
 
-export function createHourCard(item, timezone, formatTime, formatTemperature) {
+function createHourCard(item, timezone, formatTime, formatTemperature) {
   const element = document.createElement("article");
   const time = document.createElement("time");
   const temperature = document.createElement("strong");
@@ -76,7 +76,7 @@ export function createHourCard(item, timezone, formatTime, formatTemperature) {
   return element;
 }
 
-export function createDayCard(item, timezone, formatDay, formatTemperature) {
+function createDayCard(item, timezone, formatDay, formatTemperature) {
   const element = document.createElement("article");
   const day = document.createElement("time");
   const temperatures = document.createElement("strong");

@@ -700,6 +700,37 @@ button {
   justify-content: flex-start;
 }
 
+.sun-times {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.sun-time {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0.75rem;
+  border: 0.0625rem solid rgb(255 177 90 / 18%);
+  border-radius: 0.75rem;
+  background: rgb(23 25 16 / 72%);
+}
+
+.sun-time .material-symbols-outlined {
+  color: #ffb15a;
+  font-size: 1.5rem !important;
+}
+
+.sun-time span:not(.material-symbols-outlined) {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.sun-time strong {
+  font-size: 1.375rem;
+}
+
 .plus-panel .section-heading .material-symbols-outlined {
   font-size: 2.75rem !important;
 }

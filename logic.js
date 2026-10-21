@@ -9,12 +9,9 @@ const FIVE_MINUTE_SECONDS = 5 * 60;
 const FIFTEEN_MINUTE_SECONDS = 15 * 60;
 const RAIN_HOUR_STEPS = 12;
 
-// Token Bearer à récupérer sur https://www.blagues-api.fr/ (profil).
-export const BLAGUES_API_TOKEN = "";
-
 // Ville affichée par l'application.
 // Modifier cette variable pour changer de ville.
-export const LOCATION = Object.freeze({
+const LOCATION = Object.freeze({
   name: "Boulogne-Billancourt",
   latitude: 48.83545,
   longitude: 2.24128,
@@ -23,7 +20,7 @@ export const LOCATION = Object.freeze({
   timezone: "Europe/Paris"
 });
 
-export const PLACES = Object.freeze([
+const PLACES = Object.freeze([
   Object.freeze({
     id: "defense",
     name: "La Défense",
@@ -40,7 +37,11 @@ export const PLACES = Object.freeze([
   })
 ]);
 
-export function buildQueryString(parameters) {
+function getBlaguesApiToken() {
+  return globalThis.BLAGUES_API_TOKEN || "";
+}
+
+function buildQueryString(parameters) {
   const searchParameters = new URLSearchParams();
 
   for (const [key, value] of Object.entries(parameters)) {
@@ -50,7 +51,7 @@ export function buildQueryString(parameters) {
   return searchParameters.toString();
 }
 
-export async function fetchWeather(location) {
+async function fetchWeather(location) {
   const parameters = {
     latitude: location.latitude,
     longitude: location.longitude,
@@ -88,19 +89,21 @@ export async function fetchWeather(location) {
       "apparent_temperature_max",
       "uv_index_max",
       "precipitation_sum",
-      "precipitation_probability_max"
+      "precipitation_probability_max",
+      "sunrise",
+      "sunset"
     ]
   };
   const response = await fetchJson(`${WEATHER_API_URL}?${buildQueryString(parameters)}`);
   return normalizeWeatherResponse(response, location);
 }
 
-export function selectDailyForecast(daily, timezone, now = new Date()) {
+function selectDailyForecast(daily, timezone, now = new Date()) {
   const index = getHour(now, timezone) >= NEXT_DAY_HOUR ? 1 : 0;
   return daily[index] ?? null;
 }
 
-export function normalizeWeatherResponse(response, location) {
+function normalizeWeatherResponse(response, location) {
   if (!response.current || !response.hourly || !response.daily) {
     throw new Error("La réponse météo est incomplète.");
   }
@@ -125,37 +128,39 @@ export function normalizeWeatherResponse(response, location) {
   };
 }
 
-export function saveWeatherCache(weather, storage = globalThis.localStorage) {
+function saveWeatherCache(weather, storage = globalThis.localStorage) {
   writeJsonCache(WEATHER_CACHE_KEY, weather, storage);
 }
 
-export function loadWeatherCache(storage = globalThis.localStorage) {
+function loadWeatherCache(storage = globalThis.localStorage) {
   return readJsonCache(WEATHER_CACHE_KEY, storage);
 }
 
-export function isJokeCacheFresh(joke, now = Date.now()) {
+function isJokeCacheFresh(joke, now = Date.now()) {
   return Boolean(joke?.fetchedAt && now - joke.fetchedAt < JOKE_REFRESH_INTERVAL_MS);
 }
 
-export function saveJokeCache(joke, storage = globalThis.localStorage) {
+function saveJokeCache(joke, storage = globalThis.localStorage) {
   writeJsonCache(JOKE_CACHE_KEY, joke, storage);
 }
 
-export function loadJokeCache(storage = globalThis.localStorage) {
+function loadJokeCache(storage = globalThis.localStorage) {
   return readJsonCache(JOKE_CACHE_KEY, storage);
 }
 
-export async function fetchJoke() {
-  if (!BLAGUES_API_TOKEN) {
+async function fetchJoke() {
+  const token = getBlaguesApiToken();
+
+  if (!token) {
     throw new Error(
-      "Token Blagues API manquant. Renseignez BLAGUES_API_TOKEN dans logic.js."
+      "Token Blagues API manquant. Ajoutez BLAGUES_API_TOKEN dans .env puis lancez npm run env."
     );
   }
 
   const response = await fetchJson(
     `${BLAGUES_API_URL}?disallow=dark&disallow=limit`,
     {
-      Authorization: `Bearer ${BLAGUES_API_TOKEN}`
+      Authorization: `Bearer ${token}`
     }
   );
 
@@ -171,8 +176,6 @@ export async function fetchJoke() {
     fetchedAt: Date.now()
   };
 }
-
-export { JOKE_REFRESH_INTERVAL_MS };
 
 async function fetchJson(url, headers = {}) {
   const controller = new AbortController();

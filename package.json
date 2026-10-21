@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "env": "node scripts/generate-env.mjs",
+    "prestart": "npm run env",
+    "start": "python -m http.server 8000",
     "test": "node --test"
   }
 }

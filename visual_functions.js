@@ -1,24 +1,17 @@
-import {
-  createDayCard,
-  createHourCard,
-  createRainItem,
-  createWeatherIcon,
-  getWeatherDescription
-} from "./weather_components.js";
-
 const temperatureFormatter = new Intl.NumberFormat("fr-FR", {
   maximumFractionDigits: 1
 });
 
-export function renderWeather(weather) {
+function renderWeather(weather) {
   renderCurrentWeather(weather);
   renderRain(weather);
   renderHourly(weather);
   renderDaily(weather);
+  renderSunTimes(weather);
   document.getElementById("last-update").textContent = formatUpdateTime(weather.updatedAt);
 }
 
-export function renderPlaces(places) {
+function renderPlaces(places) {
   for (const place of places) {
     document.getElementById(`${place.id}-period`).textContent = place.period ?? "—";
     document.getElementById(`${place.id}-temperature-min`).textContent = formatTemperature(
@@ -36,14 +29,14 @@ export function renderPlaces(places) {
   }
 }
 
-export function renderLocation(location) {
+function renderLocation(location) {
   const details = [location.admin1, location.country].filter(Boolean).join(", ");
 
   document.getElementById("location-name").textContent = location.name;
   document.getElementById("location-details").textContent = details;
 }
 
-export function renderJoke(joke, errorMessage = "") {
+function renderJoke(joke, errorMessage = "") {
   const setup = document.getElementById("joke-setup");
   const answer = document.getElementById("joke-answer");
   const error = document.getElementById("joke-error");
@@ -56,6 +49,19 @@ export function renderJoke(joke, errorMessage = "") {
 
   error.hidden = !errorMessage;
   error.textContent = errorMessage;
+}
+
+function renderSunTimes(weather) {
+  const today = weather.daily[0] ?? {};
+
+  document.getElementById("sunrise-time").textContent = formatClockTime(
+    today.sunrise,
+    weather.timezone
+  );
+  document.getElementById("sunset-time").textContent = formatClockTime(
+    today.sunset,
+    weather.timezone
+  );
 }
 
 function renderCurrentWeather(weather) {
@@ -149,6 +155,22 @@ function formatTime(timestamp, timezone) {
     minute: "2-digit",
     timeZone: timezone
   }).format(timestamp * 1000);
+}
+
+function formatClockTime(timestamp, timezone) {
+  if (timestamp == null) {
+    return "—";
+  }
+
+  const unixSeconds = typeof timestamp === "string"
+    ? Math.floor(Date.parse(timestamp) / 1000)
+    : timestamp;
+
+  if (!Number.isFinite(unixSeconds)) {
+    return "—";
+  }
+
+  return formatTime(unixSeconds, timezone);
 }
 
 function formatDay(timestamp, timezone) {

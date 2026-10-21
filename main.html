@@ -16,11 +16,11 @@
     rel="stylesheet"
     href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined"
   >
-  <script
-    type="module"
-    defer
-    src="main.js"
-  ></script>
+  <script src="env.local.js"></script>
+  <script src="weather_components.js" defer></script>
+  <script src="logic.js" defer></script>
+  <script src="visual_functions.js" defer></script>
+  <script src="main.js" defer></script>
 </head>
 
 <body>
@@ -242,6 +242,27 @@
       class="plus-panel"
       aria-labelledby="joke-title"
     >
+      <div
+        class="sun-times"
+        aria-label="Lever et coucher du soleil"
+      >
+        <p class="sun-time">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >wb_twilight</span>
+          <span>Lever</span>
+          <strong id="sunrise-time">—</strong>
+        </p>
+        <p class="sun-time">
+          <span
+            class="material-symbols-outlined"
+            aria-hidden="true"
+          >wb_sunny</span>
+          <span>Coucher</span>
+          <strong id="sunset-time">—</strong>
+        </p>
+      </div>
       <div class="section-heading">
         <h2 id="joke-title">Blague du moment</h2>
         <span

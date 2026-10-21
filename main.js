@@ -1,23 +1,3 @@
-import {
-  JOKE_REFRESH_INTERVAL_MS,
-  LOCATION,
-  PLACES,
-  fetchJoke,
-  fetchWeather,
-  isJokeCacheFresh,
-  loadJokeCache,
-  loadWeatherCache,
-  saveJokeCache,
-  saveWeatherCache,
-  selectDailyForecast
-} from "./logic.js";
-import {
-  renderJoke,
-  renderLocation,
-  renderPlaces,
-  renderWeather
-} from "./visual_functions.js";
-
 const REFRESH_INTERVAL_MS = 60 * 1000; // Toutes les minutes
 
 let latestWeather = null;

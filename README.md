@@ -1,5 +1,13 @@
 # Projet : Meteo Getter
 
+## Cible Raspberry Pi Zero 2W (recommandé)
+
+Pour un affichage HDMI 1080p **sans Chromium**, utilisez l’app Python kiosk :
+
+→ voir **[pi/README.md](pi/README.md)** (`sudo ./install.sh` sur Raspberry Pi OS Lite).
+
+Les fichiers web à la racine restent disponibles pour le développement navigateur.
+
 ## Objectif
 
 **Meteo Getter** est une application web ultra-légère qui interroge Open-Meteo pour récupérer et afficher :

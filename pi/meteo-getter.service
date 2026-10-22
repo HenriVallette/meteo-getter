@@ -1,0 +1,21 @@
+[Unit]
+Description=Meteo Getter kiosk (Pi Zero 2W)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=REPLACE_USER
+Group=REPLACE_USER
+WorkingDirectory=REPLACE_DIR
+Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-REPLACE_DIR/.env
+ExecStart=/usr/bin/python3 REPLACE_DIR/main.py
+Restart=always
+RestartSec=5
+
+# Accès console / DRM pour l'affichage fullscreen sans X
+SupplementaryGroups=video render input
+
+[Install]
+WantedBy=multi-user.target

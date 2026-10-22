@@ -385,6 +385,7 @@ button {
 .dashboard {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(19rem, 0.75fr) minmax(17rem, 0.62fr);
+  grid-template-rows: minmax(0, 0.75fr) minmax(0, 0.5fr) minmax(0, 0.5fr);
   gap: 1.125rem;
   padding: 0 clamp(1rem, 3vw, 3rem) 0.875rem;
   height: calc(100vh - 3.375rem);

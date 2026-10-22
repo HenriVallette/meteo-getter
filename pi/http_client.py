@@ -9,7 +9,11 @@ from typing import Any
 
 
 def fetch_json(url: str, headers: dict[str, str] | None = None, timeout: float = 10) -> Any:
-  request_headers = {"Accept": "application/json"}
+  # User-Agent custom : Cloudflare bloque le UA par défaut de urllib (Error 1010).
+  request_headers = {
+    "Accept": "application/json",
+    "User-Agent": "meteo-getter/1.0",
+  }
   if headers:
     request_headers.update(headers)
 

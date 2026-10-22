@@ -19,15 +19,18 @@ _last_surface = None
 def init_display(fullscreen: bool = True) -> None:
   global _screen, _clock
 
-  # Sur Pi Lite sans X, privilégier KMS/DRM ; sous bureau laisser le défaut.
-  if not os.environ.get("DISPLAY") and not os.environ.get("SDL_VIDEODRIVER"):
-    os.environ.setdefault("SDL_VIDEODRIVER", "kmsdrm")
+  # Windows : driver natif. Pi Lite sans X : KMS/DRM. Sinon laisser le défaut (X11).
+  if not os.environ.get("SDL_VIDEODRIVER"):
+    if sys.platform == "win32":
+      os.environ["SDL_VIDEODRIVER"] = "windows"
+    elif not os.environ.get("DISPLAY"):
+      os.environ["SDL_VIDEODRIVER"] = "kmsdrm"
 
   import pygame
 
-  pygame.init()
-  pygame.mouse.set_visible(False)
-  flags = pygame.FULLSCREEN if fullscreen else 0
+  pygame.display.init()
+  pygame.font.init()
+  flags = 0 if not fullscreen else pygame.FULLSCREEN
   try:
     _screen = pygame.display.set_mode(SCREEN, flags)
   except pygame.error:
@@ -37,6 +40,7 @@ def init_display(fullscreen: bool = True) -> None:
       pygame.display.init()
     _screen = pygame.display.set_mode(SCREEN)
   pygame.display.set_caption("Meteo Getter")
+  pygame.mouse.set_visible(False)
   _clock = pygame.time.Clock()
 
 

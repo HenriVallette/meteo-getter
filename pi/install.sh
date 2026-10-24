@@ -31,17 +31,25 @@ if [[ ! -f "${SCRIPT_DIR}/.env" && -f "${SCRIPT_DIR}/.env.example" ]]; then
   echo "==> .env créé depuis .env.example (renseignez BLAGUES_API_TOKEN si besoin)"
 fi
 
-echo "==> Configuration systemd (${TARGET_USER})"
+TARGET_UID="$(id -u "${TARGET_USER}")"
+
+echo "==> Configuration systemd (${TARGET_USER}, uid=${TARGET_UID})"
 tmpdir="$(mktemp -d)"
 sed \
   -e "s|REPLACE_USER|${TARGET_USER}|g" \
   -e "s|REPLACE_DIR|${SCRIPT_DIR}|g" \
+  -e "s|REPLACE_UID|${TARGET_UID}|g" \
   "${SERVICE_SRC}" > "${tmpdir}/${SERVICE_NAME}"
 install -m 644 "${tmpdir}/${SERVICE_NAME}" "${SERVICE_DST}"
 rm -rf "${tmpdir}"
 
-# Cache utilisateur
+# Runtime dir Mesa/EGL + cache utilisateur
+install -d -m 700 -o "${TARGET_USER}" -g "${TARGET_USER}" "/run/user/${TARGET_UID}"
 install -d -o "${TARGET_USER}" -g "${TARGET_USER}" "${TARGET_HOME}/.cache/meteo-getter"
+
+# Le getty sur tty1 empêche souvent d'être DRM master
+systemctl stop getty@tty1.service || true
+systemctl disable getty@tty1.service || true
 
 systemctl daemon-reload
 systemctl enable "${SERVICE_NAME}"

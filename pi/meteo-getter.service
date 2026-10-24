@@ -1,6 +1,6 @@
 [Unit]
 Description=Meteo Getter kiosk (Pi Zero 2W)
-After=network-online.target
+After=network-online.target systemd-user-sessions.service
 Wants=network-online.target
 
 [Service]
@@ -9,13 +9,25 @@ User=REPLACE_USER
 Group=REPLACE_USER
 WorkingDirectory=REPLACE_DIR
 Environment=PYTHONUNBUFFERED=1
+Environment=SDL_VIDEODRIVER=kmsdrm
+Environment=XDG_RUNTIME_DIR=/run/user/REPLACE_UID
 EnvironmentFile=-REPLACE_DIR/.env
+ExecStartPre=+/bin/mkdir -p /run/user/REPLACE_UID
+ExecStartPre=+/bin/chown REPLACE_USER:REPLACE_USER /run/user/REPLACE_UID
+ExecStartPre=+/bin/chmod 700 /run/user/REPLACE_UID
 ExecStart=/usr/bin/python3 REPLACE_DIR/main.py
 Restart=always
 RestartSec=5
 
 # Accès console / DRM pour l'affichage fullscreen sans X
 SupplementaryGroups=video render input
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+PAMName=login
 
 [Install]
 WantedBy=multi-user.target

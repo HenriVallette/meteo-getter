@@ -458,16 +458,16 @@ def render_dashboard(
     _icon(draw, (px0 + 14, py + 66), "thermostat", font_icon_md, PRIMARY_SOFT)
     _text(
       draw,
-      (px0 + 54, py + 72),
+      (px0 + 54, py + 70),
       f"{format_temperature(place.get('minimum'))} / {format_temperature(place.get('maximum'))}",
       font_metric,
     )
     rain_p = place.get("rain_probability")
     rain_txt = "—" if rain_p is None else f"{int(round(rain_p))}%"
     _icon(draw, (px0 + 14, py + 112), "humidity_percentage", font_icon_md, PRIMARY_SOFT)
-    _text(draw, (px0 + 54, py + 118), rain_txt, font_metric)
+    _text(draw, (px0 + 54, py + 116), rain_txt, font_metric)
     rw = draw.textbbox((0, 0), rain_txt, font=font_metric)
-    _text(draw, (px0 + 62 + (rw[2] - rw[0]), py + 131), "de pluie", font_sm, MUTED)
+    _text(draw, (px0 + 62 + (rw[2] - rw[0]), py + 127), "de pluie", font_sm, MUTED)
     if place.get("error"):
       _text(draw, (px0 + 14, py + ph - 26), str(place["error"])[:36], font_xs, ERROR)
 

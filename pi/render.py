@@ -86,7 +86,7 @@ def _load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageF
 def format_temperature(value: Any) -> str:
   if value is None:
     return "—"
-  return f"{float(value):.1f}°".replace(".", ",")
+  return f"{float(value):.1f}°C".replace(".", ",")
 
 
 def format_number(value: Any, digits: int = 1) -> str:
@@ -399,7 +399,7 @@ def render_dashboard(
     (
       "thermostat",
       "Min. / Max.",
-      f"{format_temperature(today.get('temperature_2m_min'))} /{format_temperature(today.get('temperature_2m_max'))}",
+      f"{format_temperature(today.get('temperature_2m_min'))} / {format_temperature(today.get('temperature_2m_max'))}",
     ),
     ("flare", "Indice UV", format_number(today.get("uv_index_max"), 1)),
     ("humidity_percentage", "Pluie", f"{int(round(today.get('precipitation_probability_max') or 0))}%"),
@@ -417,7 +417,7 @@ def render_dashboard(
     draw = ImageDraw.Draw(image)
     _centered_icon(draw, (mx, my + 14, mx + mw, my + 58), icon_name, font_icon_metric, METRICS_TEXT)
     _centered_text(draw, (mx, my + 62, mx + mw, my + 88), title, font_md, METRICS_TEXT)
-    _centered_text(draw, (mx, my + 92, mx + mw, my + mh - 14), value, font_big_metric, METRICS_TEXT)
+    _centered_text(draw, (mx, my + 92, mx + mw, my + mh - 14), value, font_metric, METRICS_TEXT)
 
   # =========================================================================
   # PLACES PANEL

@@ -399,7 +399,7 @@ def render_dashboard(
     (
       "thermostat",
       "Min. / Max.",
-      f"{format_temperature(today.get('temperature_2m_min'))} / {format_temperature(today.get('temperature_2m_max'))}",
+      f"{format_temperature(today.get('temperature_2m_min')).replace("C", "")} / {format_temperature(today.get('temperature_2m_max')).replace("C", "")}",
     ),
     ("flare", "Indice UV", format_number(today.get("uv_index_max"), 1)),
     ("humidity_percentage", "Pluie", f"{int(round(today.get('precipitation_probability_max') or 0))}%"),

@@ -86,7 +86,7 @@ def _load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageF
 def format_temperature(value: Any) -> str:
   if value is None:
     return "—"
-  return f"{float(value):.1f}°C".replace(".", ",")
+  return f"{float(value):.1f}°".replace(".", ",")
 
 
 def format_number(value: Any, digits: int = 1) -> str:
@@ -453,21 +453,21 @@ def render_dashboard(
     bw = bb[2] - bb[0] + 20
     bx = px1 - 14 - bw
     draw.rounded_rectangle((bx, py + 16, bx + bw, py + 38), radius=10, fill=PRIMARY_SOFT)
-    _text(draw, (bx + 10, py + 16), period, font_xs, METRICS_TEXT)
+    _text(draw, (bx + 10, py + 20), period, font_xs, METRICS_TEXT)
 
     _icon(draw, (px0 + 14, py + 66), "thermostat", font_icon_md, PRIMARY_SOFT)
     _text(
       draw,
-      (px0 + 54, py + 64),
+      (px0 + 54, py + 72),
       f"{format_temperature(place.get('minimum'))} / {format_temperature(place.get('maximum'))}",
       font_metric,
     )
     rain_p = place.get("rain_probability")
     rain_txt = "—" if rain_p is None else f"{int(round(rain_p))}%"
     _icon(draw, (px0 + 14, py + 112), "humidity_percentage", font_icon_md, PRIMARY_SOFT)
-    _text(draw, (px0 + 54, py + 110), rain_txt, font_metric)
+    _text(draw, (px0 + 54, py + 118), rain_txt, font_metric)
     rw = draw.textbbox((0, 0), rain_txt, font=font_metric)
-    _text(draw, (px0 + 62 + (rw[2] - rw[0]), py + 123), "de pluie", font_sm, MUTED)
+    _text(draw, (px0 + 62 + (rw[2] - rw[0]), py + 131), "de pluie", font_sm, MUTED)
     if place.get("error"):
       _text(draw, (px0 + 14, py + ph - 26), str(place["error"])[:36], font_xs, ERROR)
 

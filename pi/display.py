@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import array
-import fcntl
 import os
 import sys
 import time
@@ -11,6 +10,12 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
 from config import SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
+
+# fcntl = Unix uniquement (mode graphique tty / framebuffer Pi)
+try:
+  import fcntl
+except ImportError:  # Windows
+  fcntl = None  # type: ignore[assignment]
 
 if TYPE_CHECKING:
   from PIL import Image
@@ -31,6 +36,9 @@ KD_TEXT = 0
 
 def _ensure_xdg_runtime_dir() -> None:
   """Mesa/EGL (kmsdrm) exige un XDG_RUNTIME_DIR accessible en écriture."""
+  if sys.platform == "win32" or not hasattr(os, "getuid"):
+    return
+
   current = os.environ.get("XDG_RUNTIME_DIR", "")
   if current and os.path.isdir(current) and os.access(current, os.W_OK):
     return
@@ -47,18 +55,20 @@ def _ensure_xdg_runtime_dir() -> None:
 
 
 def _prepare_video_env(fullscreen: bool) -> None:
+  if sys.platform == "win32":
+    if not os.environ.get("SDL_VIDEODRIVER"):
+      os.environ["SDL_VIDEODRIVER"] = "windows"
+    return
+
   _ensure_xdg_runtime_dir()
   if not os.environ.get("DISPLAY"):
     os.environ.pop("WAYLAND_DISPLAY", None)
-
-  os.environ.setdefault("EGL_PLATFORM", "drm")
-  os.environ.setdefault("SDL_FBDEV", "/dev/fb0")
+    os.environ.setdefault("EGL_PLATFORM", "drm")
+    os.environ.setdefault("SDL_FBDEV", "/dev/fb0")
 
   if os.environ.get("SDL_VIDEODRIVER"):
     return
-  if sys.platform == "win32":
-    os.environ["SDL_VIDEODRIVER"] = "windows"
-  elif fullscreen and not os.environ.get("DISPLAY"):
+  if fullscreen and not os.environ.get("DISPLAY"):
     os.environ["SDL_VIDEODRIVER"] = "kmsdrm"
 
 
@@ -70,8 +80,10 @@ def _read_sysfs_int(path: str, default: int = 0) -> int:
 
 
 def _enter_graphics_mode() -> None:
-  """Empêche la console texte d'écraser le framebuffer."""
+  """Empêche la console texte d'écraser le framebuffer (Linux uniquement)."""
   global _tty_fd
+  if fcntl is None:
+    return
   for tty in ("/dev/tty1", "/dev/tty0", "/dev/console"):
     try:
       fd = os.open(tty, os.O_RDWR)
@@ -84,7 +96,7 @@ def _enter_graphics_mode() -> None:
 
 def _leave_graphics_mode() -> None:
   global _tty_fd
-  if _tty_fd is None:
+  if _tty_fd is None or fcntl is None:
     return
   try:
     fcntl.ioctl(_tty_fd, KDSETMODE, KD_TEXT)

@@ -20,7 +20,15 @@ fi
 
 echo "==> Installation des paquets apt"
 apt-get update
-apt-get install -y python3-pil python3-pygame fonts-dejavu-core
+apt-get install -y \
+  python3-pil \
+  python3-pygame \
+  fonts-dejavu-core \
+  libegl1 \
+  libegl-dev \
+  libgbm1 \
+  libgl1-mesa-dri \
+  libgles2
 
 echo "==> Droits d'exécution"
 chmod +x "${SCRIPT_DIR}/main.py" "${SCRIPT_DIR}/install.sh"

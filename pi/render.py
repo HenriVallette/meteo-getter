@@ -22,6 +22,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from config import SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
 from icons import icon_char, load_icon_font, weather_icon_char, weather_icon_name
+from weather import select_daily_forecast
 from weather_labels import get_weather_label
 
 # Palette (design / CSS)
@@ -301,7 +302,14 @@ def render_dashboard(
   timezone = (weather or {}).get("timezone") or "UTC"
   location = (weather or {}).get("location") or {}
   current = (weather or {}).get("current") or {}
-  today = ((weather or {}).get("daily") or [{}])[0]
+  daily = (weather or {}).get("daily") or []
+  # À partir de 21h : min/max, UV, pluie, lever/coucher = prévisions du lendemain
+  focus_day = select_daily_forecast(daily, timezone) or (daily[0] if daily else {})
+  focus_label = (
+    "Demain"
+    if daily and focus_day is not daily[0]
+    else "Aujourd'hui"
+  )
 
   # =========================================================================
   # CURRENT PANEL
@@ -392,17 +400,17 @@ def render_dashboard(
   panel_w, panel_h = _box_size(METRICS_BOX)
   _rounded_card(image, METRICS_BOX, METRICS_TOP, METRICS_BOTTOM)
   draw = ImageDraw.Draw(image)
-  _text(draw, (x0 + CARD_PAD, y0 + CARD_PAD), "Aujourd'hui", font_h2, METRICS_TEXT)
+  _text(draw, (x0 + CARD_PAD, y0 + CARD_PAD), focus_label, font_h2, METRICS_TEXT)
 
   metrics = [
     ("air", "Vent", f"{format_number(current.get('wind_speed_10m'))} km/h"),
     (
       "thermostat",
       "Min. / Max.",
-      f"{format_temperature(today.get('temperature_2m_min')).replace("C", "")} / {format_temperature(today.get('temperature_2m_max')).replace("C", "")}",
+      f"{format_temperature(focus_day.get('temperature_2m_min')).replace("C", "")} / {format_temperature(focus_day.get('temperature_2m_max')).replace("C", "")}",
     ),
-    ("flare", "Indice UV", format_number(today.get("uv_index_max"), 1)),
-    ("humidity_percentage", "Pluie", f"{int(round(today.get('precipitation_probability_max') or 0))}%"),
+    ("flare", "Indice UV", format_number(focus_day.get("uv_index_max"), 1)),
+    ("humidity_percentage", "Pluie", f"{int(round(focus_day.get('precipitation_probability_max') or 0))}%"),
   ]
   grid_x = x0 + CARD_PAD
   grid_y = y0 + CARD_PAD + 42
@@ -541,14 +549,14 @@ def render_dashboard(
       _centered_text(draw, (dx, dy + 16, dx + dw, dy + 40), format_day(item.get("time"), timezone), font_md, MUTED)
       _centered_icon(
         draw,
-        (dx, dy + 60, dx + dw, dy + 106),
+        (dx, dy + 40, dx + dw, dy + 86),
         weather_icon_name(item.get("weather_code")),
         font_icon_sm,
         PRIMARY_SOFT,
       )
       temps = (
-        f"{format_temperature(item.get('temperature_2m_min'))} / "
-        f"{format_temperature(item.get('temperature_2m_max'))}"
+        f"{format_temperature(item.get('temperature_2m_min')).replace("C", "")} / "
+        f"{format_temperature(item.get('temperature_2m_max')).replace("C", "")}"
       )
       _centered_text(draw, (dx, dy + 102, dx + dw, dy + 130), temps, font_card)
       _centered_text(
@@ -571,8 +579,8 @@ def render_dashboard(
   sun_h = 100
   sun_w = (panel_w - 2 * CARD_PAD - INNER_GAP) // 2
   for index, (title, value, icon_name) in enumerate((
-    ("Lever", format_clock_time(today.get("sunrise"), timezone), "wb_twilight"),
-    ("Coucher", format_clock_time(today.get("sunset"), timezone), "wb_twilight_2"),
+    ("Lever", format_clock_time(focus_day.get("sunrise"), timezone), "wb_twilight"),
+    ("Coucher", format_clock_time(focus_day.get("sunset"), timezone), "wb_twilight_2"),
   )):
     sx = x0 + CARD_PAD + index * (sun_w + INNER_GAP)
     _inner_tile(image, (sx, sun_y, sx + sun_w, sun_y + sun_h), (*CARD_INNER, 210))

@@ -52,14 +52,14 @@ function renderJoke(joke, errorMessage = "") {
 }
 
 function renderSunTimes(weather) {
-  const today = weather.daily[0] ?? {};
+  const focusDay = selectDailyForecast(weather.daily, weather.timezone) ?? weather.daily[0] ?? {};
 
   document.getElementById("sunrise-time").textContent = formatClockTime(
-    today.sunrise,
+    focusDay.sunrise,
     weather.timezone
   );
   document.getElementById("sunset-time").textContent = formatClockTime(
-    today.sunset,
+    focusDay.sunset,
     weather.timezone
   );
 }
@@ -68,8 +68,11 @@ function renderCurrentWeather(weather) {
   const current = weather.current;
   const description = getWeatherDescription(current.weather_code);
   const iconContainer = document.getElementById("current-weather-icon");
-  const today = weather.daily[0] ?? {};
+  const focusDay = selectDailyForecast(weather.daily, weather.timezone) ?? weather.daily[0] ?? {};
+  const focusLabel =
+    weather.daily.length > 0 && focusDay !== weather.daily[0] ? "Demain" : "Aujourd'hui";
 
+  document.getElementById("metrics-title").textContent = focusLabel;
   document.getElementById("current-temperature").textContent = formatTemperature(
     current.temperature_2m
   );
@@ -79,14 +82,14 @@ function renderCurrentWeather(weather) {
   document.getElementById("wind-speed").textContent =
     `${formatNumber(current.wind_speed_10m)} km/h`;
   document.getElementById("temperature-min").textContent = formatTemperature(
-    today.temperature_2m_min
+    focusDay.temperature_2m_min
   );
   document.getElementById("temperature-max").textContent = formatTemperature(
-    today.temperature_2m_max
+    focusDay.temperature_2m_max
   );
-  document.getElementById("uv-index").textContent = formatNumber(today.uv_index_max);
+  document.getElementById("uv-index").textContent = formatNumber(focusDay.uv_index_max);
   document.getElementById("rain-probability").textContent =
-    `${Math.round(today.precipitation_probability_max ?? 0)}%`;
+    `${Math.round(focusDay.precipitation_probability_max ?? 0)}%`;
   iconContainer.replaceChildren(createWeatherIcon(current.weather_code, "current-icon"));
 }
 

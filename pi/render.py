@@ -356,9 +356,9 @@ def render_dashboard(
     MUTED,
   )
   draw.text(
-    (x1 - CARD_PAD - 130, temp_y + 10),
+    (x1 - CARD_PAD - 250, temp_y - 25),
     weather_icon_char(current.get("weather_code")),
-    font=font_icon_xl,
+    font=load_icon_font(220),
     fill=PRIMARY_SOFT,
   )
 

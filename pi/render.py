@@ -342,9 +342,9 @@ def render_dashboard(
   temp_y = iy + 62
   temp_label = format_temperature(current.get("temperature_2m"))
   glow_layer = Image.new("RGBA", SCREEN, (0, 0, 0, 0))
-  # glow_draw = ImageDraw.Draw(glow_layer)
-  # for dx, dy in ((-2, 0), (2, 0), (0, -2), (0, 2)):
-  #   glow_draw.text((ix + 60 + dx, temp_y + dy), temp_label, font=font_temp, fill=(255, 138, 42, 50))
+  glow_draw = ImageDraw.Draw(glow_layer)
+  for dx, dy in ((-2, 0), (2, 0), (0, -2), (0, 2)):
+    glow_draw.text((ix + 60 + dx, temp_y + dy), temp_label, font=font_temp, fill=(255, 138, 42, 50))
   image = Image.alpha_composite(image.convert("RGBA"), glow_layer).convert("RGB")
   draw = ImageDraw.Draw(image)
   _text(draw, (ix + 60, temp_y), temp_label, font_temp, PRIMARY_SOFT)
@@ -356,7 +356,7 @@ def render_dashboard(
     MUTED,
   )
   draw.text(
-    (x1 - CARD_PAD - 250, temp_y - 25),
+    (x1 - CARD_PAD - 250, temp_y - 50),
     weather_icon_char(current.get("weather_code")),
     font=load_icon_font(220),
     fill=PRIMARY_SOFT,

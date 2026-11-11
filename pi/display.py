@@ -147,6 +147,7 @@ class _Framebuffer:
       image = image.convert("RGB")
 
     if self.bpp == 16:
+      print("[display] écriture fb0 RGB565…", flush=True)
       raw = _rgb_to_rgb565(image)
     elif self.bpp == 24:
       raw = image.tobytes("raw", "BGR")
@@ -182,11 +183,15 @@ class _Framebuffer:
 
 
 def _rgb_to_rgb565(image: "Image.Image") -> bytes:
+  """RGB → RGB565 (framebuffer 16 bpp, fréquent sur Pi)."""
   pixels = image.tobytes()
-  out = array.array("H")
-  for i in range(0, len(pixels), 3):
-    r, g, b = pixels[i], pixels[i + 1], pixels[i + 2]
-    out.append(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3))
+  count = len(pixels) // 3
+  # Pré-allocation compacte (évite une list[int] de 2M éléments)
+  out = array.array("H", [0]) * count
+  mv = memoryview(pixels)
+  for i in range(count):
+    j = i * 3
+    out[i] = ((mv[j] & 0xF8) << 8) | ((mv[j + 1] & 0xFC) << 3) | (mv[j + 2] >> 3)
   if sys.byteorder != "little":
     out.byteswap()
   return out.tobytes()
@@ -231,16 +236,27 @@ def _init_framebuffer() -> None:
 
 
 def init_display(fullscreen: bool = True) -> None:
-  """Initialise l'affichage. Sur Pi Lite : pygame/kmsdrm, sinon /dev/fb0."""
-  use_fb_first = os.environ.get("METEO_DISPLAY", "").lower() == "fb"
+  """Initialise l'affichage.
+
+  Sur Pi Lite sans X : priorise /dev/fb0.
+  pygame/kmsdrm peut renvoyer OK avec un écran noir — on ne s'y fie qu'en secours
+  ou si METEO_DISPLAY=kmsdrm.
+  """
+  mode = os.environ.get("METEO_DISPLAY", "").lower().strip()
 
   if sys.platform == "win32" or os.environ.get("DISPLAY") or not fullscreen:
     _init_pygame(fullscreen=fullscreen)
     return
 
-  if use_fb_first:
-    _init_framebuffer()
-    return
+  prefer_kms = mode in ("kmsdrm", "pygame", "kms")
+  prefer_fb = mode in ("", "fb", "framebuffer", "auto")
+
+  if prefer_fb and not prefer_kms:
+    try:
+      _init_framebuffer()
+      return
+    except Exception as error:  # noqa: BLE001
+      print(f"[display] fb0 échoué: {error} — tentative pygame/kmsdrm", flush=True)
 
   try:
     _init_pygame(fullscreen=True)
